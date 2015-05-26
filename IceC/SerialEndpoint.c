@@ -22,22 +22,20 @@ IceC_Serial_InputStream_init(Ice_InputStreamPtr self, int fd, Ice_EndpointType t
     uint32_t size = 0;
 
     trace();
+
     if (type != Ice_EndpointTypeSerial)
 	return false;
 
-    throw("NotImplemented", __FILE__, __LINE__);
-    return false;
+    /* first: read header, and get message size */
+    self->size = Serial_read((byte*)self->data, 14);
+    size = (uint32_t)*(self->data + 10);
 
-    /* /\* first: read header, and get message size *\/ */
-    /* self->size = read(fd, (byte*)self->data, 14); */
-    /* size = (uint32_t)*(self->data + 10); */
+    /* then: read as size specifies */
+    size -= 14;
+    assert(size <= MAX_MESSAGE_SIZE && "Message too big!");
 
-    /* /\* then: read as size specifies *\/ */
-    /* size -= 14; */
-    /* assert(size <= MAX_MESSAGE_SIZE && "Message too big!"); */
-    /* self->size += read(fd, (byte*)(self->data + 14), size); */
-
-    /* return true; */
+    self->size += Serial_read((byte*)(self->data + 14), size);
+    return true;
 }
 
 bool
@@ -59,7 +57,6 @@ IceC_Serial_EndpointInfo_init(Ice_EndpointInfoPtr self, Ice_EndpointType type,
     	return false;
 
     self->type = type;
-    self->options = NULL;
     self->datagram = true;
     Object_init((ObjectPtr)self);
 
@@ -103,6 +100,16 @@ IceC_Serial_Connection_send(Ice_ConnectionPtr self, int fd, byte* data, uint16_t
     return true;
 }
 
+bool
+IceC_Serial_Connection_dataReady(Ice_ConnectionPtr self, bool* ready) {
+    trace();
+    if (self->type != Ice_EndpointTypeSerial)
+	return false;
+
+    *ready = Serial_available();
+    return true;
+}
+
 void
 IceC_Serial_init(Ice_CommunicatorPtr ic) {
     trace();
@@ -125,4 +132,5 @@ IceC_Serial_init(Ice_CommunicatorPtr ic) {
     endpoint.Connection_accept = NULL;
     endpoint.Connection_send = &IceC_Serial_Connection_send;
     endpoint.Connection_close = NULL;
+    endpoint.Connection_dataReady = &IceC_Serial_Connection_dataReady;
 }

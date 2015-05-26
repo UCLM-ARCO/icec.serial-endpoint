@@ -11,6 +11,8 @@ extern "C" {
 
     int Serial_init();
     int Serial_write(const byte* data, uint16_t size);
+    int Serial_read(byte* data, uint16_t size);
+    bool Serial_available();
 
 #ifdef __cplusplus
 }

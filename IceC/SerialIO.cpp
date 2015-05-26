@@ -13,6 +13,17 @@ Serial_init() {
 
 int
 Serial_write(const byte* data, uint16_t size) {
-    return Serial.write(data, size);
+    int retval = Serial.write(data, size);
+    Serial.flush();
+    return retval;
 }
 
+int
+Serial_read(byte* data, uint16_t size) {
+    return Serial.readBytes((char*)data, size);
+}
+
+bool
+Serial_available() {
+    return Serial.available() > 0;
+}
