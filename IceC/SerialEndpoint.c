@@ -7,7 +7,7 @@ static IcePlugin_PluginListItem item;
 static IcePlugin_EndpointObject endpoint;
 
 bool
-IceC_Serial_getProtocolType(const char* proto, Ice_EndpointType* result) {
+SerialEndpoint_getProtocolType(const char* proto, Ice_EndpointType* result) {
     trace();
 
     if (!streq(proto, "serial"))
@@ -18,7 +18,7 @@ IceC_Serial_getProtocolType(const char* proto, Ice_EndpointType* result) {
 }
 
 bool
-IceC_Serial_InputStream_init(Ice_InputStreamPtr self, int fd, Ice_EndpointType type) {
+SerialEndpoint_InputStream_init(Ice_InputStreamPtr self, int fd, Ice_EndpointType type) {
     uint32_t size = 0;
 
     trace();
@@ -39,7 +39,7 @@ IceC_Serial_InputStream_init(Ice_InputStreamPtr self, int fd, Ice_EndpointType t
 }
 
 bool
-IceC_Serial_ObjectAdapter_activate(Ice_ObjectAdapterPtr self) {
+SerialEndpoint_ObjectAdapter_activate(Ice_ObjectAdapterPtr self) {
     trace();
 
     if (self->epinfo.type != Ice_EndpointTypeSerial)
@@ -50,7 +50,7 @@ IceC_Serial_ObjectAdapter_activate(Ice_ObjectAdapterPtr self) {
 }
 
 bool
-IceC_Serial_EndpointInfo_init(Ice_EndpointInfoPtr self, Ice_EndpointType type,
+SerialEndpoint_EndpointInfo_init(Ice_EndpointInfoPtr self, Ice_EndpointType type,
 			      const char* endpoint) {
     trace();
     if (type != Ice_EndpointTypeSerial)
@@ -64,7 +64,20 @@ IceC_Serial_EndpointInfo_init(Ice_EndpointInfoPtr self, Ice_EndpointType type,
 }
 
 bool
-IceC_Serial_ObjectPrx_connect(Ice_ObjectPrxPtr self) {
+SerialEndpoint_EndpointInfo_writeToOutputStream(Ice_EndpointInfoPtr self,
+					     Ice_OutputStreamPtr os) {
+    trace();
+
+    if (self->type != Ice_EndpointTypeSerial)
+	return false;
+
+    Ice_OutputStream_startWriteEncaps(os);
+    Ice_OutputStream_endWriteEncaps(os);
+    return true;
+}
+
+bool
+SerialEndpoint_ObjectPrx_connect(Ice_ObjectPrxPtr self) {
     trace();
 
     if (self->epinfo.type != Ice_EndpointTypeSerial)
@@ -75,7 +88,7 @@ IceC_Serial_ObjectPrx_connect(Ice_ObjectPrxPtr self) {
 }
 
 bool
-IceC_Serial_ObjectPrx_init(Ice_ObjectPrxPtr self, Ice_EndpointType type,
+SerialEndpoint_ObjectPrx_init(Ice_ObjectPrxPtr self, Ice_EndpointType type,
 			   const char* strprx) {
     trace();
     if (type != Ice_EndpointTypeSerial)
@@ -84,16 +97,16 @@ IceC_Serial_ObjectPrx_init(Ice_ObjectPrxPtr self, Ice_EndpointType type,
     Ice_Connection_init(&(self->connection), type);
     Ice_OutputStream_init(&(self->stream));
 
-    IceC_Serial_EndpointInfo_init(&(self->epinfo), type, strprx);
+    SerialEndpoint_EndpointInfo_init(&(self->epinfo), type, strprx);
 
     Object_init((ObjectPtr)self);
     return true;
 }
 
 bool
-IceC_Serial_Connection_send(Ice_ConnectionPtr self, int fd, byte* data, uint16_t* size) {
+SerialEndpoint_Connection_send(Ice_ConnectionPtr self, int fd, byte* data, uint16_t* size) {
     trace();
-    if (self->type != Ice_EndpointTypeSerial)
+    if (self->epinfo->type != Ice_EndpointTypeSerial)
 	return false;
 
     *size = Serial_write(data, *size);
@@ -101,9 +114,9 @@ IceC_Serial_Connection_send(Ice_ConnectionPtr self, int fd, byte* data, uint16_t
 }
 
 bool
-IceC_Serial_Connection_dataReady(Ice_ConnectionPtr self, bool* ready) {
+SerialEndpoint_Connection_dataReady(Ice_ConnectionPtr self, bool* ready) {
     trace();
-    if (self->type != Ice_EndpointTypeSerial)
+    if (self->epinfo->type != Ice_EndpointTypeSerial)
 	return false;
 
     *ready = Serial_available();
@@ -111,7 +124,7 @@ IceC_Serial_Connection_dataReady(Ice_ConnectionPtr self, bool* ready) {
 }
 
 void
-IceC_Serial_init(Ice_CommunicatorPtr ic) {
+SerialEndpoint_init(Ice_CommunicatorPtr ic) {
     trace();
 
     /* Note: is important to call IcePlugin_registerEndpoint after
@@ -123,14 +136,15 @@ IceC_Serial_init(Ice_CommunicatorPtr ic) {
     IcePlugin_PluginListItem_init(&item, (ObjectPtr)&endpoint);
     IcePlugin_registerEndpoint(&item);
 
-    endpoint.getProtocolType = &IceC_Serial_getProtocolType;
-    endpoint.InputStream_init = &IceC_Serial_InputStream_init;
-    endpoint.ObjectAdapter_activate = &IceC_Serial_ObjectAdapter_activate;
-    endpoint.EndpointInfo_init = &IceC_Serial_EndpointInfo_init;
-    endpoint.ObjectPrx_init = &IceC_Serial_ObjectPrx_init;
-    endpoint.ObjectPrx_connect = &IceC_Serial_ObjectPrx_connect;
+    endpoint.getProtocolType = &SerialEndpoint_getProtocolType;
+    endpoint.InputStream_init = &SerialEndpoint_InputStream_init;
+    endpoint.ObjectAdapter_activate = &SerialEndpoint_ObjectAdapter_activate;
+    endpoint.EndpointInfo_init = &SerialEndpoint_EndpointInfo_init;
+    endpoint.EndpointInfo_writeToOutputStream = &SerialEndpoint_EndpointInfo_writeToOutputStream;
+    endpoint.ObjectPrx_init = &SerialEndpoint_ObjectPrx_init;
+    endpoint.ObjectPrx_connect = &SerialEndpoint_ObjectPrx_connect;
     endpoint.Connection_accept = NULL;
-    endpoint.Connection_send = &IceC_Serial_Connection_send;
+    endpoint.Connection_send = &SerialEndpoint_Connection_send;
     endpoint.Connection_close = NULL;
-    endpoint.Connection_dataReady = &IceC_Serial_Connection_dataReady;
+    endpoint.Connection_dataReady = &SerialEndpoint_Connection_dataReady;
 }

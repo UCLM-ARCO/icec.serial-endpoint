@@ -2,3 +2,4 @@ syntax: glob
 
 *.o
 *~
+arduino/examples/hello-client/hello.h
