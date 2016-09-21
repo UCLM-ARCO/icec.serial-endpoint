@@ -51,8 +51,9 @@ SerialEndpoint_ObjectAdapter_activate(Ice_ObjectAdapterPtr self) {
 
 bool
 SerialEndpoint_EndpointInfo_init(Ice_EndpointInfoPtr self, Ice_EndpointType type,
-			      const char* endpoint) {
+				 const char* endpoint) {
     trace();
+
     if (type != Ice_EndpointTypeSerial)
     	return false;
 
@@ -65,7 +66,7 @@ SerialEndpoint_EndpointInfo_init(Ice_EndpointInfoPtr self, Ice_EndpointType type
 
 bool
 SerialEndpoint_EndpointInfo_writeToOutputStream(Ice_EndpointInfoPtr self,
-					     Ice_OutputStreamPtr os) {
+						Ice_OutputStreamPtr os) {
     trace();
 
     if (self->type != Ice_EndpointTypeSerial)
@@ -89,12 +90,13 @@ SerialEndpoint_ObjectPrx_connect(Ice_ObjectPrxPtr self) {
 
 bool
 SerialEndpoint_ObjectPrx_init(Ice_ObjectPrxPtr self, Ice_EndpointType type,
-			   const char* strprx) {
+			      const char* strprx) {
     trace();
+
     if (type != Ice_EndpointTypeSerial)
 	return false;
 
-    Ice_Connection_init(&(self->connection), type);
+    Ice_Connection_init(&(self->connection), &(self->epinfo));
     Ice_OutputStream_init(&(self->stream));
 
     SerialEndpoint_EndpointInfo_init(&(self->epinfo), type, strprx);
@@ -106,6 +108,7 @@ SerialEndpoint_ObjectPrx_init(Ice_ObjectPrxPtr self, Ice_EndpointType type,
 bool
 SerialEndpoint_Connection_send(Ice_ConnectionPtr self, int fd, byte* data, uint16_t* size) {
     trace();
+
     if (self->epinfo->type != Ice_EndpointTypeSerial)
 	return false;
 

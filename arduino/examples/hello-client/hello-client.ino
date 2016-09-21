@@ -1,7 +1,6 @@
 // -*- mode: c++; coding: utf-8 -*-
 
 #include <IceC.h>
-#include <IceC/platforms/arduino/debug.hpp>
 #include <SerialEndpoint.h>
 
 #include "hello.h"

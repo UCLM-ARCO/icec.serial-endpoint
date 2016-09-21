@@ -7,7 +7,6 @@ int
 Serial_init() {
     Serial.begin(115200);
     while(!Serial);
-
     return 0;
 }
 
