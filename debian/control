@@ -1,0 +1,15 @@
+Source: icec-serial
+Section: utils
+Priority: extra
+Maintainer: Oscar Aceña Herrera <oscaracena@gmail.com>
+Build-Depends: debhelper (>= 7.0.50~), quilt
+Standards-Version: 3.9.6
+
+Package: icec-serial
+Architecture: all
+Depends: ${misc:Depends}
+Description: IceC endpoint for serial device
+ This is an endpoint for IceC using the hardware serial port available
+ on most Arduinos. An stringfied proxy should look like the following:
+ .
+    Light -e 1.0 -d:serial
