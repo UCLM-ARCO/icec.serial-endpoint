@@ -1,0 +1,4 @@
+: DO NOT EDIT, it will be overwritten!
+: destination | routerId | endpoints | mode
+: --------------------------------------------------
+5502 | 5502 | serial -h 127.0.0.1 -p 1793 | d
