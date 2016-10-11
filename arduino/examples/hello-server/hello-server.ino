@@ -35,7 +35,6 @@ void loop() {
 void
 Example_HelloI_sayHello(Example_HelloPtr self) {
     static int state = LOW;
-    state == LOW ? HIGH : LOW;
-
+    state = state == LOW ? HIGH : LOW;
     digitalWrite(LED_PIN, state);
 }
