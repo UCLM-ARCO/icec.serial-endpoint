@@ -1,3 +1,9 @@
+icec-serial (0.20161013-1) unstable; urgency=low
+
+  * New release
+
+ -- Oscar Aceña Herrera <oscaracena@gmail.com>  Thu, 13 Oct 2016 13:36:01 +0200
+
 icec-serial (0.20160927-1) unstable; urgency=low
 
   * Initial release
