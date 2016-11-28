@@ -30,3 +30,4 @@ clean:
 	make -C arduino/examples/hello-client $@
 	find -name "*.o" -delete
 	find -name "*~" -delete
+	$(RM) -f *.zip
