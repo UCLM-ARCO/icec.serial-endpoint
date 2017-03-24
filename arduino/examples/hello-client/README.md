@@ -1,7 +1,7 @@
 Overview
 ========
 
-This is a basic example of Serial Endpoiint as a client for
+This is a basic example of Serial Endpoint as a client for
 Arduino. You should have an Arduino Uno (or compatible) connected to
 /dev/ttyUSB0 port. To launch the server, please use the counterpart
 on "ice.serial-endpoint" examples.
