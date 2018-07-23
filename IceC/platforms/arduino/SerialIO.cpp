@@ -1,5 +1,6 @@
 /* -*- mode: c++; coding: utf-8; truncate-lines: true -*- */
 
+#include <Arduino.h>
 #include <IceC/SerialIO.h>
 #include <HardwareSerial.h>
 
