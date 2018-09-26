@@ -11,7 +11,7 @@ SerialEndpoint_getProtocolType(const char* proto, Ice_EndpointType* result) {
     trace();
 
     if (!streq(proto, "serial"))
-    	return false;
+        return false;
 
     *result = Ice_EndpointTypeSerial;
     return true;
@@ -24,7 +24,7 @@ SerialEndpoint_InputStream_init(Ice_InputStreamPtr self, int fd, Ice_EndpointTyp
     trace();
 
     if (type != Ice_EndpointTypeSerial)
-	return false;
+        return false;
 
     /* first: read header, and get message size */
     self->size = Serial_read((byte*)self->data, 14);
@@ -43,19 +43,19 @@ SerialEndpoint_ObjectAdapter_activate(Ice_ObjectAdapterPtr self) {
     trace();
 
     if (self->epinfo.type != Ice_EndpointTypeSerial)
-	return false;
+        return false;
 
-    self->connection.fd = Serial_init();
+    self->connection.fd = 0;
     return true;
 }
 
 bool
 SerialEndpoint_EndpointInfo_init(Ice_EndpointInfoPtr self, Ice_EndpointType type,
-				 const char* endpoint) {
+                                 const char* endpoint) {
     trace();
 
     if (type != Ice_EndpointTypeSerial)
-    	return false;
+        return false;
 
     self->type = type;
     self->datagram = true;
@@ -66,11 +66,11 @@ SerialEndpoint_EndpointInfo_init(Ice_EndpointInfoPtr self, Ice_EndpointType type
 
 bool
 SerialEndpoint_EndpointInfo_writeToOutputStream(Ice_EndpointInfoPtr self,
-						Ice_OutputStreamPtr os) {
+                                                Ice_OutputStreamPtr os) {
     trace();
 
     if (self->type != Ice_EndpointTypeSerial)
-	return false;
+        return false;
 
     Ice_OutputStream_startWriteEncaps(os);
     Ice_OutputStream_endWriteEncaps(os);
@@ -82,19 +82,19 @@ SerialEndpoint_ObjectPrx_connect(Ice_ObjectPrxPtr self) {
     trace();
 
     if (self->epinfo.type != Ice_EndpointTypeSerial)
-	return false;
+        return false;
 
-    self->connection.fd = Serial_init();
+    self->connection.fd = 0;
     return true;
 }
 
 bool
 SerialEndpoint_ObjectPrx_init(Ice_ObjectPrxPtr self, Ice_EndpointType type,
-			      const char* strprx) {
+                              const char* strprx) {
     trace();
 
     if (type != Ice_EndpointTypeSerial)
-	return false;
+        return false;
 
     Ice_Connection_init(&(self->connection), &(self->epinfo));
     Ice_OutputStream_init(&(self->stream));
@@ -110,7 +110,7 @@ SerialEndpoint_Connection_send(Ice_ConnectionPtr self, int fd, byte* data, uint1
     trace();
 
     if (self->epinfo->type != Ice_EndpointTypeSerial)
-	return false;
+        return false;
 
     *size = Serial_write(data, *size);
     return true;
@@ -120,7 +120,7 @@ bool
 SerialEndpoint_Connection_dataReady(Ice_ConnectionPtr self, bool* ready) {
     trace();
     if (self->epinfo->type != Ice_EndpointTypeSerial)
-	return false;
+        return false;
 
     *ready = Serial_available();
     return true;
@@ -134,6 +134,7 @@ SerialEndpoint_init(Ice_CommunicatorPtr ic) {
        Ice_Communicator_initialize, check here that communicator is
        initialized. */
     Ptr_check(ic);
+    Serial_init();
 
     IcePlugin_EndpointObject_init(&endpoint);
     IcePlugin_PluginListItem_init(&item, (ObjectPtr)&endpoint);

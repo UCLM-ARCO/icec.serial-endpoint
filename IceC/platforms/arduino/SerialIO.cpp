@@ -12,11 +12,15 @@
 
 int
 Serial_init() {
-#ifdef ARDUINO_ARCH_SAMD
+
+// USB_NO_INIT implies that USBDevice will not automatically be initialized, so
+// we need to initialize it here
+#if defined(ARDUINO_ARCH_SAMD) && defined(USB_NO_INIT)
     USBDevice.init();
     USBDevice.attach();
 #endif
-    SERIAL.begin(115200);
+
+    SERIAL.begin(SERIAL_SPEED);
     while(!SERIAL);
     return 0;
 }

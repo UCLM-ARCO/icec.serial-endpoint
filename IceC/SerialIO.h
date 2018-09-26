@@ -5,6 +5,10 @@
 
 #include <IceC/IceC.h>
 
+#ifndef SERIAL_SPEED
+#define SERIAL_SPEED 115200
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
