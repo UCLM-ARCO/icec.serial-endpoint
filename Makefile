@@ -21,11 +21,11 @@ arduino-package: clean
 	cp -r arduino/examples $(ARDUINO_DIST)
 	cp -r IceC $(ARDUINO_DIST)/src/
 	install -m 644 IceC/SerialEndpoint.h $(ARDUINO_DIST)/src/
-	install -m 644 arduino/keywords.txt $(ARDUINO_DIST)
-	install -m 644 arduino/library.properties $(ARDUINO_DIST)
+	install -m 644 arduino/*.* $(ARDUINO_DIST)
 
-	cd $(ARDUINO_DIST)/..; zip -r arduino-serial-endpoint-$$(date +%Y%m%d).zip SerialEndpoint
-	mv $(ARDUINO_DIST)/../*.zip .
+	cd $(ARDUINO_DIST); zip -r arduino-serial-endpoint-$(VER).zip *
+	mv $(ARDUINO_DIST)/*.zip .
+	cp arduino-serial-endpoint-$(VER).zip arduino-serial-endpoint-latest.zip
 
 update-versions:
 	sed -i -E "s/(^version=)(.+)/\1$(VER)/g" arduino/library.properties; \

@@ -12,6 +12,10 @@
 
 int
 Serial_init() {
+#ifdef ARDUINO_ARCH_SAMD
+    USBDevice.init();
+    USBDevice.attach();
+#endif
     SERIAL.begin(115200);
     while(!SERIAL);
     return 0;
