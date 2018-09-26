@@ -1,0 +1,21 @@
+{
+    "name": "IceC Serial Endpoint",
+    "keywords": "icec, serial, endpoint, middleware, iot, sensor, actuator, network",
+    "description": "Endpoint for IceC using the hardware serial port available on most Arduinos.",
+    "authors":
+    [
+	{
+	    "name": "Oscar Acena",
+	    "email": "oscar.acena@uclm.es",
+	    "maintainer": true
+	},
+	{
+            "name": "Arco Research Group (UCLM)",
+            "url": "https://arcogroup.bitbucket.io/icec/"
+	}
+    ],
+    "version": "0.20180926-1",
+    "downloadUrl": "https://bitbucket.org/arco_group/icec.serial-endpoint/downloads/arduino-serial-endpoint-latest.zip",
+    "frameworks": "*",
+    "platforms": "atmelavr,espressif8266"
+}

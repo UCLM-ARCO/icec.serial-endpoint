@@ -1,5 +1,7 @@
 # -*- mode: makefile-gmake; coding: utf-8 -*-
 
+VER ?= $(shell head -n 1 debian/changelog | cut -d' ' -f2 | tr -d "()")
+
 all:
 
 install: DST = $(DESTDIR)/usr/share/arduino/libraries/SerialEndpoint
@@ -24,6 +26,11 @@ arduino-package: clean
 
 	cd $(ARDUINO_DIST)/..; zip -r arduino-serial-endpoint-$$(date +%Y%m%d).zip SerialEndpoint
 	mv $(ARDUINO_DIST)/../*.zip .
+
+update-versions:
+	sed -i -E "s/(^version=)(.+)/\1$(VER)/g" arduino/library.properties; \
+	sed -i -E "s/(^ *\"version\": *)(\".+\")/\1\"$(VER)\"/g" arduino/library.json
+
 
 .PHONY: clean
 clean:

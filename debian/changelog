@@ -1,3 +1,9 @@
+icec-serial (0.20180926-1) unstable; urgency=low
+
+  * New release, build library for pio
+
+ -- Oscar Aceña Herrera <oscaracena@gmail.com>  Wed, 26 Sep 2018 09:31:59 +0200
+
 icec-serial (0.20180723-1) unstable; urgency=low
 
   * New release
