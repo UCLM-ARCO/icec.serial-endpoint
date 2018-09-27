@@ -28,7 +28,14 @@ SerialEndpoint_InputStream_init(Ice_InputStreamPtr self, int fd, Ice_EndpointTyp
 
     /* first: read header, and get message size */
     self->size = Serial_read((byte*)self->data, 14);
-    size = (uint32_t)*(self->data + 10);
+
+    /* FIXME: add support for BIG-ENDIAN devices */
+    Ice_Byte* dst = &size;
+    Ice_Byte* src = self->data + 10;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst = *src;
 
     /* then: read as size specifies */
     size -= 14;
@@ -118,7 +125,7 @@ SerialEndpoint_Connection_send(Ice_ConnectionPtr self, int fd, byte* data, uint1
 
 bool
 SerialEndpoint_Connection_dataReady(Ice_ConnectionPtr self, bool* ready) {
-    trace();
+    /* trace(); */
     if (self->epinfo->type != Ice_EndpointTypeSerial)
         return false;
 
